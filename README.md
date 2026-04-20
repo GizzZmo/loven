@@ -20,6 +20,10 @@
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Usage](#usage)
+  - [Running the full analysis](#running-the-full-analysis)
+  - [Adding your own queries](#adding-your-own-queries)
+  - [Adding new peace themes](#adding-new-peace-themes)
+  - [Async batch search](#async-batch-search)
 - [Architecture](#architecture)
 - [Peace Themes](#peace-themes)
 - [Documentation](#documentation)
@@ -34,10 +38,11 @@
 
 | Paradigm | Applied as |
 |---|---|
-| Object-oriented | `LovDataClient` class for encapsulation and reuse |
+| Object-oriented | `LovDataClient` / `AsyncLovDataClient` classes for encapsulation and reuse |
 | Functional | Pure functions with `map`/`filter`/`reduce` patterns |
 | Declarative | Pandas DataFrames for data analysis |
 | Imperative | Structured logging and error handling |
+| Asynchronous | `asyncio` + `aiohttp` for non-blocking parallel API calls |
 
 ---
 
@@ -46,6 +51,7 @@
 - 🔍 **Search** Lovdata's public API for Norwegian legislation by keyword
 - 🕊️ **Filter** results by pre-defined "peace themes" (energy, water, environment, ethics, etc.)
 - 📊 **Analyse** and display results in a structured Pandas DataFrame
+- ⚡ **Async batch search** – run many queries in parallel with `AsyncLovDataClient`
 - 🧱 **Modular design** – easily extend with new queries or themes
 - 🛡️ **Graceful error handling** – falls back cleanly when the API is unavailable
 
@@ -75,8 +81,10 @@ loven/
 
 | Package | Purpose |
 |---|---|
-| `requests` | HTTP calls to the Lovdata API |
+| `requests` | Synchronous HTTP calls to the Lovdata API |
 | `pandas` | Tabular data analysis |
+| `aiohttp` | Asynchronous HTTP calls (for `AsyncLovDataClient`) |
+| `nest_asyncio` | Allows `asyncio` event loops inside Jupyter notebooks |
 
 ---
 
@@ -99,7 +107,7 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 ### 3. Install dependencies
 
 ```bash
-pip install requests pandas jupyter
+pip install requests pandas jupyter aiohttp nest_asyncio
 ```
 
 ---
@@ -148,12 +156,100 @@ Edit the `PEACE_THEMES` constant in **Cell 1**:
 PEACE_THEMES = ["energi", "vann", "miljø", "etikk", "selskap", "oppløsning", "fred", "bolig"]
 ```
 
+### Async batch search
+
+For large-scale analysis, use `AsyncLovDataClient` (add as **Cell 7** in the notebook). It fetches multiple queries in parallel using `asyncio` and `aiohttp`, which is significantly faster than sequential synchronous calls:
+
+```python
+# Cell 7: Async API search – non-blocking parallel fetching
+import asyncio
+import aiohttp
+import nest_asyncio
+
+nest_asyncio.apply()  # Required to run asyncio inside Jupyter
+
+class AsyncLovDataClient(LovDataClient):
+    """Async extension of LovDataClient for efficient batch fetching."""
+
+    async def async_search(self, session: aiohttp.ClientSession, query: str, **filters) -> Dict:
+        """Single async search – returns raw JSON."""
+        params = {"q": query, "limit": filters.get("limit", 30)}
+        if "doc_type" in filters:
+            params["type"] = filters["doc_type"]
+        if "department" in filters:
+            params["departement"] = filters["department"]
+        if "date_from" in filters:
+            params["dato_fra"] = filters["date_from"]
+        if "date_to" in filters:
+            params["dato_til"] = filters["date_to"]
+
+        url = f"{self.base_url}/sok"
+        try:
+            async with session.get(url, params=params, timeout=15) as resp:
+                resp.raise_for_status()
+                data = await resp.json()
+                logger.info(f"Async search done for '{query}' – {len(data.get('hits', []))} hits.")
+                return data
+        except Exception as e:
+            logger.error(f"Async search failed for '{query}': {e}")
+            return {"error": str(e)}
+
+    async def async_peace_batch_analysis(self, queries: List[str], **common_filters) -> pd.DataFrame:
+        """Run all queries in parallel and return a combined DataFrame."""
+        async with aiohttp.ClientSession() as session:
+            tasks = [self.async_search(session, q, **common_filters) for q in queries]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        all_hits = []
+        for q, result in zip(queries, results):
+            if isinstance(result, dict) and "hits" in result:
+                for hit in result["hits"]:
+                    hit["query"] = q
+                    hit["peace_relevance"] = sum(
+                        1 for theme in PEACE_THEMES
+                        if theme in str(hit.get("tittel", "")).lower()
+                    )
+                all_hits.extend(result["hits"])
+
+        df = pd.DataFrame(all_hits)
+        if not df.empty:
+            df = df.sort_values(by="peace_relevance", ascending=False)
+            df = df[["tittel", "url", "peace_relevance", "query"]]
+        print(f"Async batch done! {len(queries)} queries → {len(df)} hits.")
+        return df
+```
+
+**Cell 8 – example run:**
+
+```python
+client = AsyncLovDataClient()
+
+peace_queries = [
+    "selskapsloven oppløsning",
+    "vannressursloven energilov",
+    "miljø etikk Oljefondet",
+    "kraftforbruk vannforsyning",
+    "nabolag bolig miljø Eidsvoll",
+]
+
+df_batch = await client.async_peace_batch_analysis(peace_queries, limit=20)
+display(df_batch.head(12))
+```
+
+**Benefits of the async approach:**
+
+| Benefit | Description |
+|---|---|
+| Speed | All queries run concurrently instead of one-by-one |
+| Scalability | Handles dozens or hundreds of queries without blocking |
+| Readable | Fully typed, logged, and commented |
+
 ---
 
 ## Architecture
 
 ```
-LovDataClient
+LovDataClient (synchronous)
 │
 ├── __init__(base_url)          Sets up a requests.Session with JSON headers
 │
@@ -162,6 +258,14 @@ LovDataClient
 │
 └── filter_peace_laws(data)     Filters hits by PEACE_THEMES keywords
                                 Returns List[Dict]
+
+AsyncLovDataClient (asynchronous, extends LovDataClient)
+│
+├── async_search(session, query, **filters)
+│                               Single async GET with optional filters
+│
+└── async_peace_batch_analysis(queries, **common_filters)
+                                Parallel batch search → sorted pd.DataFrame
 
 analyze_peace_laws(client, query)
     ├── Calls client.search()
@@ -194,7 +298,7 @@ The default set of themes used to filter Lovdata results:
 | Document | Description |
 |---|---|
 | [docs/notebook_guide.md](docs/notebook_guide.md) | Detailed walkthrough of every notebook cell |
-| [docs/api_reference.md](docs/api_reference.md) | Full reference for `LovDataClient` and `analyze_peace_laws` |
+| [docs/api_reference.md](docs/api_reference.md) | Full reference for `LovDataClient`, `AsyncLovDataClient`, and `analyze_peace_laws` |
 | [docs/contributing.md](docs/contributing.md) | How to contribute queries, themes, and code |
 
 ---
