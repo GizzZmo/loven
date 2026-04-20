@@ -25,7 +25,7 @@ Before opening the notebook, ensure you have installed all required packages:
 pip install requests pandas jupyter
 ```
 
-See [README.md](../README.md#installation) for the full installation guide.
+See [Getting Started](getting_started.md) for the full installation guide.
 
 ---
 
