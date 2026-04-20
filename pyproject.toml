@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "loven"
-version = "0.1.0"
+version = "0.4.0"
 description = "WorldPeace-Lovdata-Kompendium – Norwegian law analysis toolkit"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -33,6 +33,13 @@ dependencies = [
 
 [project.optional-dependencies]
 notebook = ["jupyter>=1.0.0", "jupyterlab>=4.0.0"]
+viz = [
+    "matplotlib>=3.8.0",
+    "wordcloud>=1.9.0",
+]
+nlp = [
+    "spacy>=3.7.0",
+]
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
@@ -40,9 +47,13 @@ dev = [
     "responses>=0.25.0",
     "aioresponses>=0.7.6",
     "ruff>=0.4.0",
+    "openpyxl>=3.1.0",
 ]
 docs = [
     "mkdocs-material>=9.5.0",
+]
+all = [
+    "loven[notebook,viz,nlp]",
 ]
 
 [project.scripts]
