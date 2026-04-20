@@ -1,0 +1,12 @@
+# Runtime dependencies
+requests>=2.31.0
+pandas>=2.0.0
+aiohttp>=3.9.0
+nest_asyncio>=1.6.0
+
+# Notebook support
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+
+# Documentation
+mkdocs-material>=9.5.0
