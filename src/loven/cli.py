@@ -100,7 +100,9 @@ def cmd_search(args: argparse.Namespace) -> None:
         return
 
     # Pretty-print with pandas
-    with __import__("pandas").option_context("display.max_colwidth", 80, "display.max_rows", 50):
+    import pandas as pd
+
+    with pd.option_context("display.max_colwidth", 80, "display.max_rows", 50):
         print(df[["tittel", "url", "tema_treff"]].to_string(index=False))
 
 

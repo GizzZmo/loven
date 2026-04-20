@@ -13,7 +13,7 @@ BASE = "https://api.lovdata.no"
 
 
 @pytest.fixture
-def sample_data(tmp_path):
+def sample_data():
     from pathlib import Path
     return json.loads(
         (Path(__file__).parent.parent / "sample_data" / "mock_lovdata_response.json")
