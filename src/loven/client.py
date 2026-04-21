@@ -11,11 +11,14 @@ AsyncLovDataClient
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import requests
 
 from loven.themes import PEACE_THEMES, count_themes, matches_theme
+
+if TYPE_CHECKING:
+    from loven.cache import DiskCache
 
 logger = logging.getLogger(__name__)
 
@@ -30,19 +33,39 @@ class LovDataClient:
     base_url:
         Root URL for all API requests.  Override to point at a local mirror
         or a mock server during testing.
+    cache:
+        Optional :class:`~loven.cache.DiskCache` instance.  When provided,
+        search results are stored on disk and retrieved on repeated calls
+        with identical parameters, avoiding redundant network requests.
 
     Examples
     --------
     >>> client = LovDataClient()
     >>> result = client.search("vannressursloven", limit=5)
     >>> df = client.to_dataframe(client.filter_peace_laws(result))
+
+    With caching::
+
+    >>> from loven.cache import DiskCache
+    >>> client = LovDataClient(cache=DiskCache())
+    >>> result = client.search("energi")  # fetched from network
+    >>> result2 = client.search("energi")  # served from cache
     """
 
-    def __init__(self, base_url: str = BASE_URL) -> None:
+    def __init__(
+        self,
+        base_url: str = BASE_URL,
+        cache: "DiskCache | None" = None,
+    ) -> None:
         self.base_url = base_url
+        self.cache = cache
         self.session = requests.Session()
         self.session.headers.update({"Accept": "application/json"})
-        logger.info("LovDataClient initialised (base_url=%s).", base_url)
+        logger.info(
+            "LovDataClient initialised (base_url=%s, cache=%s).",
+            base_url,
+            "enabled" if cache else "disabled",
+        )
 
     # ------------------------------------------------------------------
     # Search
@@ -90,6 +113,15 @@ class LovDataClient:
         if date_to:
             params["dato_til"] = date_to
 
+        # Check cache before hitting the network
+        if self.cache is not None:
+            from loven.cache import DiskCache
+            cache_key = DiskCache.make_key(query, **params)
+            cached = self.cache.get(cache_key)
+            if cached is not None:
+                logger.info("Cache hit for query '%s'.", query)
+                return cached
+
         url = f"{self.base_url}/sok"
         try:
             response = self.session.get(url, params=params, timeout=10)
@@ -100,6 +132,8 @@ class LovDataClient:
                 query,
                 len(data.get("hits", [])),
             )
+            if self.cache is not None:
+                self.cache.set(cache_key, data)
             return data
         except Exception as exc:
             logger.error("API error for query '%s': %s", query, exc)
