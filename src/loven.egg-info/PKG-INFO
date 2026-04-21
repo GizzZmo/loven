@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: loven
-Version: 0.4.0
+Version: 1.0.0
 Summary: WorldPeace-Lovdata-Kompendium – Norwegian law analysis toolkit
 Author: Verdens Øverste Leder, Jon-Arve Constantine
 License: Creative Commons Legal Code
@@ -158,6 +158,7 @@ Requires-Dist: pytest-cov>=5.0.0; extra == "dev"
 Requires-Dist: responses>=0.25.0; extra == "dev"
 Requires-Dist: aioresponses>=0.7.6; extra == "dev"
 Requires-Dist: ruff>=0.4.0; extra == "dev"
+Requires-Dist: openpyxl>=3.1.0; extra == "dev"
 Provides-Extra: docs
 Requires-Dist: mkdocs-material>=9.5.0; extra == "docs"
 Provides-Extra: all
