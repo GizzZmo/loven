@@ -32,31 +32,32 @@ This roadmap outlines the planned development of **loven** from its current note
 
 ---
 
-## Phase 2 – Testing & Quality
+## Phase 2 – Testing & Quality ✅
 
 **Goal:** Ensure correctness and enable safe contributions.
 
-- [ ] `tests/` directory with `pytest` suite
-  - [ ] `test_themes.py` – unit tests for theme filtering utilities
-  - [ ] `test_client.py` – tests for `LovDataClient` (mocked HTTP)
-  - [ ] `test_analysis.py` – tests for `analyze_peace_laws()` with sample data
-- [ ] GitHub Actions CI workflow (`.github/workflows/ci.yml`)
-  - [ ] Runs tests on every push / PR
-  - [ ] Linting with `ruff` or `flake8`
-- [ ] `pytest-cov` coverage reporting
+- [x] `tests/` directory with `pytest` suite
+  - [x] `test_themes.py` – unit tests for theme filtering utilities
+  - [x] `test_client.py` – tests for `LovDataClient` (mocked HTTP)
+  - [x] `test_analysis.py` – tests for `analyze_peace_laws()` with sample data
+- [x] GitHub Actions CI workflow (`.github/workflows/ci.yml`)
+  - [x] Runs tests on every push / PR
+  - [x] Linting with `ruff` or `flake8`
+- [x] `pytest-cov` coverage reporting
 
 ---
 
-## Phase 3 – CLI Entrypoint
+## Phase 3 – CLI Entrypoint ✅
 
 **Goal:** Allow users to query Lovdata from the terminal without Jupyter.
 
-- [ ] `src/loven/cli.py` – `argparse`-based CLI
-  - [ ] `loven search <query>` – prints a table of results
-  - [ ] `loven export <query> --output results.csv` – saves to CSV
-  - [ ] `loven themes list` – shows all current peace themes
-- [ ] Entry point registered in `pyproject.toml`
-- [ ] `docs/cli_reference.md` – CLI usage guide
+- [x] `src/loven/cli.py` – `argparse`-based CLI
+  - [x] `loven search <query>` – prints a table of results
+  - [x] `loven export <query> --output results.csv` – saves to CSV
+  - [x] `loven themes list` – shows all current peace themes
+- [x] Entry point registered in `pyproject.toml`
+- [x] `docs/cli_reference.md` – CLI usage guide
+- [x] `tests/test_cli.py` – unit tests for all CLI commands
 
 ---
 
@@ -105,7 +106,7 @@ This roadmap outlines the planned development of **loven** from its current note
 |---|---|---|
 | `0.1.0` | Phase 1 | Installable package, async support, sample data |
 | `0.2.0` | Phase 2 | Full test suite, CI/CD |
-| `0.3.0` | Phase 3 | CLI entrypoint |
+| `0.3.0` | Phase 3 | CLI entrypoint ✅ |
 | `0.4.0` | Phase 4 | Caching, scoring, visualisation |
 | `0.5.0` | Phase 5 | Streamlit dashboard, Docker |
 | `1.0.0` | Phase 6 | PyPI release, multilingual, stable API |

@@ -13,5 +13,6 @@ src/loven.egg-info/entry_points.txt
 src/loven.egg-info/requires.txt
 src/loven.egg-info/top_level.txt
 tests/test_analysis.py
+tests/test_cli.py
 tests/test_client.py
 tests/test_themes.py
