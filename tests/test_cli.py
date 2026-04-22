@@ -125,7 +125,9 @@ def test_cmd_search_custom_themes(capsys):
     parser = _build_parser()
     args = parser.parse_args(["search", "energi", "--themes", "energi"])
     cmd_search(args)
-    # Should not raise
+    captured = capsys.readouterr()
+    assert captured.out.strip()
+    assert "No peace-relevant results found." not in captured.out
 
 
 @resp_lib.activate
