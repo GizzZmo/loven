@@ -41,6 +41,18 @@ def test_parse_themes_ignores_empty_segments():
     assert _parse_themes("energi,,vann") == ["energi", "vann"]
 
 
+@pytest.mark.parametrize("raw, expected", [
+    ("energi,", ["energi"]),                    # trailing comma
+    (",energi", ["energi"]),                    # leading comma
+    ("a,b,c,d", ["a", "b", "c", "d"]),         # four items
+    (" , ", []),                                # only separators → empty list
+    ("  fred  ", ["fred"]),                     # padded single item
+    ("vann,vann", ["vann", "vann"]),            # duplicates preserved
+])
+def test_parse_themes_edge_cases(raw, expected):
+    assert _parse_themes(raw) == expected
+
+
 # ---------------------------------------------------------------------------
 # _build_parser
 # ---------------------------------------------------------------------------
@@ -93,6 +105,30 @@ def test_parser_no_command_raises():
         parser.parse_args([])
 
 
+@pytest.mark.parametrize("limit_arg, expected", [
+    ("1", 1),
+    ("5", 5),
+    ("50", 50),
+    ("100", 100),
+])
+def test_parser_search_limit_values(limit_arg, expected):
+    parser = _build_parser()
+    args = parser.parse_args(["search", "energi", "--limit", limit_arg])
+    assert args.limit == expected
+
+
+@pytest.mark.parametrize("extra, attr, expected", [
+    (["--limit", "5"], "limit", 5),
+    (["--themes", "vann"], "themes", "vann"),
+    (["--base-url", "http://x"], "base_url", "http://x"),
+    (["--themes", "energi,vann"], "themes", "energi,vann"),
+])
+def test_parser_export_options(extra, attr, expected):
+    parser = _build_parser()
+    args = parser.parse_args(["export", "q", "--output", "out.csv"] + extra)
+    assert getattr(args, attr) == expected
+
+
 # ---------------------------------------------------------------------------
 # cmd_search
 # ---------------------------------------------------------------------------
@@ -140,6 +176,26 @@ def test_cmd_search_custom_base_url():
     assert resp_lib.calls[0].request.url.startswith("http://mock/sok")
 
 
+@pytest.mark.parametrize("query", ["energi", "vann", "fred", "klima"])
+@resp_lib.activate
+def test_cmd_search_various_queries(query, capsys):
+    resp_lib.add(resp_lib.GET, f"{BASE}/sok", json=SAMPLE, status=200)
+    parser = _build_parser()
+    args = parser.parse_args(["search", query])
+    cmd_search(args)
+    assert capsys.readouterr().out.strip()
+
+
+@pytest.mark.parametrize("limit", [1, 5, 20])
+@resp_lib.activate
+def test_cmd_search_limit_values(limit, capsys):
+    resp_lib.add(resp_lib.GET, f"{BASE}/sok", json=SAMPLE, status=200)
+    parser = _build_parser()
+    args = parser.parse_args(["search", "energi", "--limit", str(limit)])
+    cmd_search(args)
+    assert capsys.readouterr().out.strip()
+
+
 # ---------------------------------------------------------------------------
 # cmd_export
 # ---------------------------------------------------------------------------
@@ -180,6 +236,22 @@ def test_cmd_export_empty_result(tmp_path, capsys):
     assert out.exists()
     captured = capsys.readouterr()
     assert "Saved 0 rows" in captured.out
+
+
+@pytest.mark.parametrize("ext,writer", [
+    ("csv", None),
+    ("xlsx", "openpyxl"),
+])
+@resp_lib.activate
+def test_cmd_export_file_formats(tmp_path, ext, writer):
+    if writer:
+        pytest.importorskip(writer)
+    resp_lib.add(resp_lib.GET, f"{BASE}/sok", json=SAMPLE, status=200)
+    out = tmp_path / f"results.{ext}"
+    parser = _build_parser()
+    args = parser.parse_args(["export", "energi", "--output", str(out)])
+    cmd_export(args)
+    assert out.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -231,3 +303,9 @@ def test_main_themes_list(capsys):
 def test_main_no_args_exits():
     with pytest.raises(SystemExit):
         main([])
+
+
+@pytest.mark.parametrize("expected_theme", ["energi", "vann", "fred", "klima"])
+def test_main_themes_list_contains_theme(expected_theme, capsys):
+    main(["themes", "list"])
+    assert expected_theme in capsys.readouterr().out
