@@ -104,7 +104,9 @@ def test_cmd_search_prints_results(capsys):
     args = parser.parse_args(["search", "energi"])
     cmd_search(args)
     captured = capsys.readouterr()
-    assert "tittel" in captured.out or len(captured.out) > 0
+    assert "tittel" in captured.out
+    assert "url" in captured.out
+    assert "tema_treff" in captured.out
 
 
 @resp_lib.activate
