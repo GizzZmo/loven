@@ -136,6 +136,8 @@ def test_cmd_search_custom_base_url():
     parser = _build_parser()
     args = parser.parse_args(["search", "energi", "--base-url", "http://mock"])
     cmd_search(args)
+    assert len(resp_lib.calls) == 1
+    assert resp_lib.calls[0].request.url.startswith("http://mock/sok")
 
 
 # ---------------------------------------------------------------------------
