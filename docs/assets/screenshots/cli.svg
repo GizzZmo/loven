@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="900" height="480">
+  <!-- Terminal window chrome -->
+  <rect width="900" height="480" fill="#1E1E1E" rx="10"/>
+  <rect width="900" height="34" fill="#2D2D2D" rx="10"/>
+  <rect y="24" width="900" height="10" fill="#2D2D2D"/>
+  <!-- Traffic lights -->
+  <circle cx="18" cy="17" r="6" fill="#FF5F57"/>
+  <circle cx="36" cy="17" r="6" fill="#FEBC2E"/>
+  <circle cx="54" cy="17" r="6" fill="#28C840"/>
+  <!-- Window title -->
+  <text x="450" y="21" font-family="monospace" font-size="12" fill="#8a8a8a" text-anchor="middle">bash — loven CLI</text>
+
+  <!-- Terminal content -->
+  <!-- Prompt + command 1 -->
+  <text x="20" y="58" font-family="'Courier New', monospace" font-size="13" fill="#4EC9B0">user@host</text>
+  <text x="100" y="58" font-family="'Courier New', monospace" font-size="13" fill="#569CD6">~/loven</text>
+  <text x="158" y="58" font-family="'Courier New', monospace" font-size="13" fill="#CCCCCC">$ loven search "energilov miljø" --limit 5</text>
+
+  <!-- Output header -->
+  <text x="20" y="78" font-family="'Courier New', monospace" font-size="12" fill="#6A9955">INFO     Searching Lovdata for 'energilov miljø' ...</text>
+
+  <!-- Table header -->
+  <text x="20" y="100" font-family="'Courier New', monospace" font-size="12" fill="#9CDCFE">tittel</text>
+  <text x="460" y="100" font-family="'Courier New', monospace" font-size="12" fill="#9CDCFE">tema_treff</text>
+  <text x="20" y="112" font-family="'Courier New', monospace" font-size="12" fill="#4EC9B0">────────────────────────────────────────────────────────────────────────────────</text>
+
+  <!-- Table rows -->
+  <text x="20"  y="128" font-family="'Courier New', monospace" font-size="12" fill="#CCCCCC">Lov om energiproduksjon (energiloven)</text>
+  <text x="460" y="128" font-family="'Courier New', monospace" font-size="12" fill="#4EC9B0">2</text>
+
+  <text x="20"  y="144" font-family="'Courier New', monospace" font-size="12" fill="#CCCCCC">Lov om vassdrag og grunnvann (vannressursloven)</text>
+  <text x="460" y="144" font-family="'Courier New', monospace" font-size="12" fill="#4EC9B0">2</text>
+
+  <text x="20"  y="160" font-family="'Courier New', monospace" font-size="12" fill="#CCCCCC">Lov om klimakvoter (klimakvoteloven)</text>
+  <text x="460" y="160" font-family="'Courier New', monospace" font-size="12" fill="#4EC9B0">2</text>
+
+  <text x="20"  y="176" font-family="'Courier New', monospace" font-size="12" fill="#CCCCCC">Lov om vern mot forurensning (forurensningsloven)</text>
+  <text x="460" y="176" font-family="'Courier New', monospace" font-size="12" fill="#CE9178">1</text>
+
+  <text x="20"  y="192" font-family="'Courier New', monospace" font-size="12" fill="#CCCCCC">Lov om naturmangfold (naturmangfoldloven)</text>
+  <text x="460" y="192" font-family="'Courier New', monospace" font-size="12" fill="#CE9178">1</text>
+  <text x="20" y="204" font-family="'Courier New', monospace" font-size="12" fill="#4EC9B0">────────────────────────────────────────────────────────────────────────────────</text>
+  <text x="20" y="220" font-family="'Courier New', monospace" font-size="12" fill="#6A9955">5 results returned.</text>
+
+  <!-- Prompt + command 2 -->
+  <text x="20" y="248" font-family="'Courier New', monospace" font-size="13" fill="#4EC9B0">user@host</text>
+  <text x="100" y="248" font-family="'Courier New', monospace" font-size="13" fill="#569CD6">~/loven</text>
+  <text x="158" y="248" font-family="'Courier New', monospace" font-size="13" fill="#CCCCCC">$ loven themes list</text>
+
+  <!-- Themes output -->
+  <text x="20" y="268" font-family="'Courier New', monospace" font-size="12" fill="#9CDCFE">Active peace themes (10):</text>
+  <text x="20" y="284" font-family="'Courier New', monospace" font-size="12" fill="#CE9178">  energi · vann · miljø · etikk · selskap · oppløsning</text>
+  <text x="20" y="300" font-family="'Courier New', monospace" font-size="12" fill="#CE9178">  fred · klima · bolig · arbeidsmiljø</text>
+
+  <!-- Prompt + command 3 -->
+  <text x="20" y="328" font-family="'Courier New', monospace" font-size="13" fill="#4EC9B0">user@host</text>
+  <text x="100" y="328" font-family="'Courier New', monospace" font-size="13" fill="#569CD6">~/loven</text>
+  <text x="158" y="328" font-family="'Courier New', monospace" font-size="13" fill="#CCCCCC">$ loven export "klimamål" --output klimamål.csv</text>
+
+  <text x="20" y="348" font-family="'Courier New', monospace" font-size="12" fill="#6A9955">INFO     Searching Lovdata for 'klimamål' ...</text>
+  <text x="20" y="364" font-family="'Courier New', monospace" font-size="12" fill="#4EC9B0">✓ Exported 18 rows to klimamål.csv</text>
+
+  <!-- Blinking cursor -->
+  <text x="20" y="400" font-family="'Courier New', monospace" font-size="13" fill="#4EC9B0">user@host</text>
+  <text x="100" y="400" font-family="'Courier New', monospace" font-size="13" fill="#569CD6">~/loven</text>
+  <text x="158" y="400" font-family="'Courier New', monospace" font-size="13" fill="#CCCCCC">$ </text>
+  <rect x="178" y="386" width="8" height="16" fill="#CCCCCC" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+</svg>
