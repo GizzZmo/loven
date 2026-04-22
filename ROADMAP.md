@@ -57,6 +57,7 @@ This roadmap outlines the planned development of **loven** from its current note
   - [x] `loven themes list` – shows all current peace themes
 - [x] Entry point registered in `pyproject.toml`
 - [x] `docs/cli_reference.md` – CLI usage guide
+- [x] `tests/test_cli.py` – unit tests for all CLI commands
 
 ---
 
