@@ -1,5 +1,7 @@
 # loven 🕊️
 
+![loven banner](assets/banner.svg)
+
 **WorldPeace-Lovdata-Kompendium** – a multi-paradigm Python toolkit for exploring Norwegian law ([Lovdata](https://lovdata.no)) with a focus on topics that underpin a harmonious, sustainable society: clean energy, water rights, environmental protection, and ethics.
 
 > *"Making Norwegian law accessible to everyone who wants to build clean energy, clean water, and a harmonious society (OHHLA)."*  
@@ -75,10 +77,13 @@ The default set of themes used to filter Lovdata results:
 
 ## Navigation
 
+- **[About](about.md)** – project background, mission, team, and technology stack
 - **[Getting Started](getting_started.md)** – installation and first steps
 - **[Notebook Guide](notebook_guide.md)** – walkthrough of every notebook cell
 - **[API Reference](api_reference.md)** – full class and function documentation
 - **[CLI Reference](cli_reference.md)** – command-line usage
+- **[Wiki](wiki/index.md)** – architecture, peace themes, FAQ, and extended examples
+- **[Screenshots](screenshots.md)** – visual overview of the dashboard and CLI
 - **[Roadmap](roadmap.md)** – planned features and version milestones
 - **[Contributing](contributing.md)** – how to add queries, themes, and code
 

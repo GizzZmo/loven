@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="58" fill="#009688" />
+  <!-- Peace symbol body -->
+  <circle cx="60" cy="60" r="32" fill="none" stroke="white" stroke-width="5"/>
+  <line x1="60" y1="28" x2="60" y2="92" stroke="white" stroke-width="5"/>
+  <line x1="60" y1="60" x2="37" y2="83" stroke="white" stroke-width="5"/>
+  <line x1="60" y1="60" x2="83" y2="83" stroke="white" stroke-width="5"/>
+  <!-- Dove silhouette (simplified) -->
+  <ellipse cx="60" cy="34" rx="10" ry="6" fill="white" opacity="0.25"/>
+  <!-- Text: loven -->
+  <text x="60" y="110" font-family="Georgia, serif" font-size="13" font-weight="bold"
+        fill="white" text-anchor="middle" letter-spacing="3">loven</text>
+</svg>

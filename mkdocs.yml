@@ -49,12 +49,20 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - About: about.md
   - Getting Started:
       - Installation: getting_started.md
       - Notebook Guide: notebook_guide.md
   - Reference:
       - API Reference: api_reference.md
       - CLI Reference: cli_reference.md
+  - Wiki:
+      - Overview: wiki/index.md
+      - Architecture: wiki/architecture.md
+      - Peace Themes: wiki/peace-themes.md
+      - FAQ: wiki/faq.md
+      - Examples: wiki/examples.md
+  - Screenshots: screenshots.md
   - Roadmap: roadmap.md
   - Contributing: contributing.md
 
