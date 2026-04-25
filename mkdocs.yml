@@ -62,6 +62,8 @@ nav:
       - Peace Themes: wiki/peace-themes.md
       - FAQ: wiki/faq.md
       - Examples: wiki/examples.md
+      - Glossary: wiki/glossary.md
+      - Contributing Guide: wiki/contributing-guide.md
   - Screenshots: screenshots.md
   - Roadmap: roadmap.md
   - Contributing: contributing.md

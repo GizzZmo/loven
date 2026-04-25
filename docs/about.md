@@ -84,6 +84,31 @@ You are free to copy, modify, distribute, and build upon the work — even for c
 
 ---
 
+## Version History
+
+**loven** reached its first stable release in April 2026. See [CHANGELOG.md](https://github.com/GizzZmo/loven/blob/main/CHANGELOG.md) for the full history.
+
+| Version | Highlights |
+|---|---|
+| `1.0.0` | PyPI-ready package, multilingual docs, issue templates, Code of Conduct |
+| `0.4.0` | Caching, export helpers, visualisation, NLP synonym expansion, Streamlit dashboard, Docker |
+| `0.3.0` | CLI entrypoint (`loven search / export / themes`) |
+| `0.2.0` | Full pytest suite, GitHub Actions CI |
+| `0.1.0` | Installable `src/loven` package, async client, sample data |
+
+---
+
+## Get Involved
+
+Contributions of all kinds are welcome — new peace-theme keywords, additional language translations, code improvements, or simply spreading the word.
+
+- **Report bugs or suggest features:** [GitHub Issues](https://github.com/GizzZmo/loven/issues)
+- **Read the contribution guide:** [docs/contributing.md](contributing.md)
+- **Browse the wiki:** [docs/wiki/index.md](wiki/index.md)
+- **Review the roadmap:** [ROADMAP.md](https://github.com/GizzZmo/loven/blob/main/ROADMAP.md)
+
+---
+
 ## Contact & Links
 
 | Resource | Link |

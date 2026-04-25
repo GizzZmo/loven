@@ -7,6 +7,7 @@
 
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/GizzZmo/loven/actions/workflows/ci.yml/badge.svg)](https://github.com/GizzZmo/loven/actions/workflows/ci.yml)
 [![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
 
 ---
@@ -34,7 +35,7 @@
 
 ## Overview
 
-**loven** ("the law" in Norwegian) is a Jupyter-notebook-based project that queries the public Lovdata API to retrieve and filter Norwegian legislation relevant to global peace goals. It demonstrates how multiple programming paradigms can be combined in a single, readable codebase:
+**loven** ("the law" in Norwegian) is a Python toolkit that queries the public Lovdata API to retrieve and filter Norwegian legislation relevant to global peace goals. It is available as an installable package, a Jupyter notebook environment, a command-line tool, and a Streamlit web dashboard. It demonstrates how multiple programming paradigms can be combined in a single, readable codebase:
 
 | Paradigm | Applied as |
 |---|---|
@@ -50,9 +51,14 @@
 
 - 🔍 **Search** Lovdata's public API for Norwegian legislation by keyword
 - 🕊️ **Filter** results by pre-defined "peace themes" (energy, water, environment, ethics, etc.)
-- 📊 **Analyse** and display results in a structured Pandas DataFrame
+- 📊 **Analyse** and display results in a structured Pandas DataFrame with relevance scoring
 - ⚡ **Async batch search** – run many queries in parallel with `AsyncLovDataClient`
-- 🧱 **Modular design** – easily extend with new queries or themes
+- 💻 **CLI** – query Lovdata from the terminal with `loven search`, `loven export`, and `loven themes`
+- 🌐 **Streamlit dashboard** – interactive web UI with search, charts, and CSV/Markdown downloads
+- 🧱 **Modular package** – `pip install loven` and `from loven import …`
+- 💾 **Disk cache** – JSON-based cache with configurable TTL to avoid redundant API calls
+- 🔬 **NLP synonym expansion** – broaden searches with the built-in synonym map or optional spaCy model
+- 🐳 **Docker** – one-command setup with `docker compose up`
 - 🛡️ **Graceful error handling** – falls back cleanly when the API is unavailable
 
 ---
@@ -61,13 +67,49 @@
 
 ```
 loven/
+├── app/
+│   └── streamlit_app.py               # Interactive web dashboard
+├── docs/
+│   ├── about.md                       # Project background, mission, and team
+│   ├── api_reference.md               # Class & function reference
+│   ├── cli_reference.md               # CLI usage guide
+│   ├── contributing.md                # Contribution guidelines
+│   ├── deployment.md                  # Local, Docker, Render, Railway, VPS
+│   ├── getting_started.md             # Installation and first steps
+│   ├── index.md                       # MkDocs home page
+│   ├── notebook_guide.md              # Step-by-step notebook walkthrough
+│   ├── notebook_guide_en.md           # English notebook walkthrough
+│   ├── roadmap.md                     # Planned features and version milestones
+│   ├── screenshots.md                 # Visual overview of the dashboard and CLI
+│   └── wiki/
+│       ├── index.md                   # Wiki home
+│       ├── architecture.md            # Codebase design and module responsibilities
+│       ├── peace-themes.md            # Deep dive into the theme keyword system
+│       ├── faq.md                     # Frequently asked questions
+│       └── examples.md                # Extended code examples and recipes
 ├── notebooks/
 │   └── Lovdata_Peace_Analysis.ipynb   # Main analysis notebook
-├── docs/
-│   ├── notebook_guide.md              # Step-by-step notebook walkthrough
-│   ├── api_reference.md               # Class & function reference
-│   └── contributing.md               # Contribution guidelines
-├── LICENSE                            # CC0 1.0 Universal
+├── sample_data/
+│   └── mock_lovdata_response.json     # Offline mock API response
+├── src/loven/
+│   ├── __init__.py                    # Public API surface
+│   ├── analysis.py                    # analyze_peace_laws() and batch_analyze()
+│   ├── cache.py                       # DiskCache – JSON-based caching with TTL
+│   ├── client.py                      # LovDataClient (sync) + AsyncLovDataClient
+│   ├── cli.py                         # argparse CLI (loven search / export / themes)
+│   ├── export.py                      # CSV, Excel, Markdown export helpers
+│   ├── nlp.py                         # Synonym expansion for theme keywords
+│   ├── themes.py                      # PEACE_THEMES constant and utilities
+│   └── viz.py                         # bar_chart() and word_cloud() helpers
+├── tests/                             # pytest test suite (59 tests)
+├── CHANGELOG.md                       # Version history
+├── CODE_OF_CONDUCT.md                 # Contributor Covenant 2.1
+├── Dockerfile                         # Multi-stage container build
+├── docker-compose.yml                 # One-command local setup
+├── mkdocs.yml                         # MkDocs-Material documentation config
+├── pyproject.toml                     # Package metadata and build configuration
+├── requirements.txt                   # Pinned dependencies
+├── ROADMAP.md                         # Development roadmap
 └── README.md                          # This file
 ```
 
@@ -76,8 +118,7 @@ loven/
 ## Requirements
 
 - Python **3.10** or higher
-- [Jupyter](https://jupyter.org/) (classic Notebook or JupyterLab)
-- The following Python packages:
+- The core package and extras are declared in `pyproject.toml`
 
 | Package | Purpose |
 |---|---|
@@ -85,6 +126,16 @@ loven/
 | `pandas` | Tabular data analysis |
 | `aiohttp` | Asynchronous HTTP calls (for `AsyncLovDataClient`) |
 | `nest_asyncio` | Allows `asyncio` event loops inside Jupyter notebooks |
+
+Optional extras (install with `pip install -e ".[extras]"`):
+
+| Extra | Packages | Purpose |
+|---|---|---|
+| `notebook` | `jupyter`, `nest_asyncio` | Jupyter notebook support |
+| `viz` | `matplotlib`, `wordcloud` | Charts and word clouds |
+| `nlp` | `spacy`, Norwegian model | Synonym expansion |
+| `dev` | `pytest`, `ruff`, `pytest-cov` | Development and testing |
+| `all` | All of the above | Everything |
 
 ---
 
@@ -104,22 +155,58 @@ python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 ```
 
-### 3. Install dependencies
+### 3. Install the package
 
 ```bash
-pip install requests pandas jupyter aiohttp nest_asyncio
+# Core package
+pip install -e .
+
+# With Jupyter notebook support
+pip install -e ".[notebook]"
+
+# With all optional extras
+pip install -e ".[all]"
+```
+
+Alternatively, install only the required runtime dependencies:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ---
 
 ## Quick Start
 
+**Jupyter notebook:**
+
 ```bash
-# Start Jupyter
+pip install -e ".[notebook]"
 jupyter notebook notebooks/Lovdata_Peace_Analysis.ipynb
 ```
 
-Run the cells in order (Cell 1 → Cell 4). Results are displayed as Pandas DataFrames inside the notebook.
+**Command-line:**
+
+```bash
+loven search "energilov miljø"
+loven themes list
+loven export "vannressursloven" --output results.csv
+```
+
+**Streamlit dashboard:**
+
+```bash
+pip install -e ".[viz]"
+streamlit run app/streamlit_app.py
+# Open http://localhost:8501
+```
+
+**Docker (one command):**
+
+```bash
+docker compose up
+# Open http://localhost:8501
+```
 
 ---
 
@@ -297,9 +384,22 @@ The default set of themes used to filter Lovdata results:
 
 | Document | Description |
 |---|---|
+| [docs/about.md](docs/about.md) | Project background, mission, team, and technology stack |
+| [docs/getting_started.md](docs/getting_started.md) | Installation and first steps |
 | [docs/notebook_guide.md](docs/notebook_guide.md) | Detailed walkthrough of every notebook cell |
 | [docs/api_reference.md](docs/api_reference.md) | Full reference for `LovDataClient`, `AsyncLovDataClient`, and `analyze_peace_laws` |
+| [docs/cli_reference.md](docs/cli_reference.md) | CLI usage guide (`search`, `export`, `themes`) |
+| [docs/deployment.md](docs/deployment.md) | Deployment options: local, Docker, Render, Railway, VPS |
+| [docs/wiki/index.md](docs/wiki/index.md) | **Wiki** – architecture, peace themes, FAQ, and extended examples |
+| [docs/wiki/architecture.md](docs/wiki/architecture.md) | How the codebase is structured and why |
+| [docs/wiki/peace-themes.md](docs/wiki/peace-themes.md) | Deep dive into the peace-theme keyword system |
+| [docs/wiki/faq.md](docs/wiki/faq.md) | Frequently asked questions |
+| [docs/wiki/examples.md](docs/wiki/examples.md) | Extended code examples and real-world recipes |
 | [docs/contributing.md](docs/contributing.md) | How to contribute queries, themes, and code |
+| [ROADMAP.md](ROADMAP.md) | Planned features and version milestones |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
+
+The full documentation site is built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) and configured in `mkdocs.yml`.
 
 ---
 
