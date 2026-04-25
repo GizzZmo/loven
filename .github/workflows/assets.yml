@@ -1,0 +1,39 @@
+name: Generate Assets
+
+on:
+  push:
+    branches: ["main", "master", "copilot/**"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate assets, artifacts & screenshots
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package and visualisation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[viz]" openpyxl
+
+      - name: Generate assets
+        run: python scripts/generate_assets.py
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: loven-assets
+          path: artifacts/
+          retention-days: 30
