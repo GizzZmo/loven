@@ -27,3 +27,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Generated assets (produced by scripts/generate_assets.py / CI workflow)
+artifacts/
