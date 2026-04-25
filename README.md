@@ -407,7 +407,7 @@ The full documentation site is built with [MkDocs Material](https://squidfunk.gi
 
 - **Data source:** [Lovdata.no](https://lovdata.no) (Stiftelsen Lovdata) – only publicly available data is used.
 - **Authors:** Verdens Øverste Leder, Jon-Arve Constantine, and the Styrilia 49 community.
-- This project is created for Jon-Arve Constantine, Merete Johnsen, and everyone who wants to save the world — one piece of legislation at a time.
+- This project is created for Jon-Arve Constantine, and everyone who wants to save the world — one piece of legislation at a time.
 
 ---
 
