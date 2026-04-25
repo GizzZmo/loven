@@ -9,20 +9,20 @@ This page describes the internal design of **loven** — why it is structured th
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         User Interfaces                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────┐│
-│  │   Jupyter    │  │     CLI      │  │   Streamlit Dashboard  ││
-│  │  Notebook    │  │ loven search │  │  app/streamlit_app.py  ││
-│  └──────┬───────┘  └──────┬───────┘  └───────────┬────────────┘│
-└─────────┼─────────────────┼──────────────────────┼─────────────┘
-          │                 │                       │
-          ▼                 ▼                       ▼
+│  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────┐ │
+│  │   Jupyter    │  │     CLI      │  │   Streamlit Dashboard  │ │
+│  │  Notebook    │  │ loven search │  │  app/streamlit_app.py  │ │
+│  └──────┬───────┘  └──────┬───────┘  └───────────┬────────────┘ │
+└─────────┼─────────────────┼──────────────────────┼──────────────┘
+          │                 │                      │
+          ▼                 ▼                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                      loven Python Package                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌──────────────────────────┐│
-│  │  analysis   │  │   themes    │  │          nlp             ││
-│  │ analyze_    │  │ PEACE_THEMES│  │  expand_themes()         ││
-│  │ peace_laws()│  │ count_themes│  │  (synonym expansion)     ││
-│  └──────┬──────┘  └──────┬──────┘  └──────────────────────────┘│
+│  ┌─────────────┐  ┌─────────────┐  ┌──────────────────────────┐ │
+│  │  analysis   │  │   themes    │  │          nlp             │ │
+│  │ analyze_    │  │ PEACE_THEMES│  │  expand_themes()         │ │
+│  │ peace_laws()│  │ count_themes│  │  (synonym expansion)     │ │
+│  └──────┬──────┘  └──────┬──────┘  └──────────────────────────┘ │
 │         │                │                                      │
 │         ▼                ▼                                      │
 │  ┌─────────────────────────────────┐  ┌────────────────────────┐│
@@ -30,7 +30,7 @@ This page describes the internal design of **loven** — why it is structured th
 │  │ LovDataClient (sync)            │  │  DiskCache             ││
 │  │ AsyncLovDataClient (async)      │◄─┤  (JSON, TTL)           ││
 │  └──────────────┬──────────────────┘  └────────────────────────┘│
-│                 │                                                │
+│                 │                                               │
 │         ┌───────┴────────┐                                      │
 │         │    export      │                                      │
 │         │ to_csv()       │                                      │
