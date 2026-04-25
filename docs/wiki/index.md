@@ -12,6 +12,8 @@ Welcome to the **loven** project wiki. These pages go deeper than the main docum
 | [Peace Themes](peace-themes.md) | Deep dive into the theme keyword system |
 | [FAQ](faq.md) | Frequently asked questions |
 | [Examples](examples.md) | Extended code examples and real-world recipes |
+| [Glossary](glossary.md) | Key terms and concepts explained |
+| [Contributing Guide](contributing-guide.md) | Step-by-step guide to contributing code, themes, and docs |
 
 ---
 
